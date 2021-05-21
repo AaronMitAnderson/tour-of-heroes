@@ -55,6 +55,17 @@ export class HeroService {
     );
   }
 
+  searchHeroes(term: string): Observable<Hero[]> {
+    if(!term.trim()){return of([])};
+    
+    return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
+      tap(x => x.length ? 
+                this.log(`found heros matching ${term}`) :
+                this.log(`no heroes matching ${term}`)),
+      catchError(this.handleError<Hero[]>('searchHeroes', []))
+    );
+  }
+
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   }
